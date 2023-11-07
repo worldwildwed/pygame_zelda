@@ -33,9 +33,15 @@ gSkeleton_animation_list = {"down": sprite_collection["skeleton_walk_down"].anim
 gHeart_image_list = [sprite_collection["heart_0"].image,sprite_collection["heart_2"].image,
                     sprite_collection["heart_4"].image]
 
+gStar_image_list = sprite_collection["star"].image
+gShieldHeart_image_list = sprite_collection["heart_shield"].image
+
 gRoom_image_list = Util.GenerateTiles("./graphics/tilesheet.png", 16, 16)
+# gRoom_image_list = Util.GenerateTiles("./graphics/tilesheet_numbered.png", 16, 16)
 gDoor_image_list = Util.GenerateTiles("./graphics/tilesheet.png", 16, 16, colorkey=(13, 7, 17, 255))
 gSwitch_image_list = Util.GenerateTiles("./graphics/switches.png", 16, 18)
+
+print('gRoom_image_list:', len(gRoom_image_list))
 
 gSounds = {
     'music': pygame.mixer.Sound('sounds/music.mp3'),

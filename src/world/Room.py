@@ -98,9 +98,29 @@ class Room:
             self.entities[i].ChangeState("walk")
 
     def GenerateObjects(self):
+
+        # Generate Star Object, user pick tolerance one monster hit
+        def generate_star():
+            random_bool = random.choice([True, False, False, False, False])
+            return random_bool
+            
+        
         switch = GameObject(GAME_OBJECT_DEFS['switch'],
                             x=random.randint(MAP_RENDER_OFFSET_X + TILE_SIZE, WIDTH-TILE_SIZE*2 - 48),
                             y=random.randint(MAP_RENDER_OFFSET_Y+TILE_SIZE, HEIGHT-(HEIGHT-MAP_HEIGHT*TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 48))
+        freeheart = GameObject(GAME_OBJECT_DEFS['freeheart'],
+                            x=random.randint(MAP_RENDER_OFFSET_X + TILE_SIZE, WIDTH-TILE_SIZE*2 - 48),
+                            y=random.randint(MAP_RENDER_OFFSET_Y+TILE_SIZE, HEIGHT-(HEIGHT-MAP_HEIGHT*TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 48))
+        pot = GameObject(GAME_OBJECT_DEFS['pot'],
+                            x=random.randint(MAP_RENDER_OFFSET_X + TILE_SIZE, WIDTH-TILE_SIZE*2 - 48),
+                            y=random.randint(MAP_RENDER_OFFSET_Y+TILE_SIZE, HEIGHT-(HEIGHT-MAP_HEIGHT*TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 48))
+        star = None
+        if generate_star():
+            print('Star Created.....')
+            star = GameObject(GAME_OBJECT_DEFS['star'],
+                                x=random.randint(MAP_RENDER_OFFSET_X + TILE_SIZE, WIDTH-TILE_SIZE*2 - 48),
+                                y=random.randint(MAP_RENDER_OFFSET_Y+TILE_SIZE, HEIGHT-(HEIGHT-MAP_HEIGHT*TILE_SIZE) + MAP_RENDER_OFFSET_Y - TILE_SIZE - 48))
+
 
         def switch_function():
             if switch.state == "unpressed":
@@ -109,10 +129,32 @@ class Room:
                 for doorway in self.doorways:
                     doorway.open = True
                 gSounds['door'].play()
+                
+        def pot_collide_function(): 
+            if pot.state == "idle":
+                pot.state = "lift"
 
+        def freeheart_collide_function(): 
+            self.player.health = self.player.health + 2
+            if (self.player.health > 20):
+                self.player.health = 20
+            self.objects.pop()
+            
+        def star_collide_function():
+            self.player.shielded = True
+            self.objects.pop(0)
+            
         switch.on_collide = switch_function
-
+        pot.on_collide = pot_collide_function
+        freeheart.on_collide = freeheart_collide_function
+        
+        if star != None:
+            star.on_collide = star_collide_function
+            self.objects.append(star)
+            
         self.objects.append(switch)
+        self.objects.append(pot)
+        self.objects.append(freeheart)
 
     def update(self, dt, events):
         if self.adjacent_offset_x != 0 or self.adjacent_offset_y != 0:
@@ -131,7 +173,10 @@ class Room:
 
             if not entity.is_dead and self.player.Collides(entity) and not self.player.invulnerable:
                 gSounds['hit_player'].play()
-                self.player.Damage(1)
+                if self.player.shielded:
+                    self.player.shielded = False
+                else:
+                    self.player.Damage(1)
                 self.player.SetInvulnerable(1.5)
 
         for object in self.objects:

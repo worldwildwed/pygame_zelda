@@ -51,12 +51,12 @@ class PlayState(BaseState):
         #self.room.update(dt, events)
 
     def render(self, screen):
-        #dungen render
+        # dungen render including Room render
         self.dungeon.render(screen)
 
+        # Render Health Bar
         health_left = self.player.health
-
-        for i in range(3):
+        for i in range(10):
             if health_left > 1:
                 heart_frame = 2
             elif health_left ==1:
@@ -67,6 +67,8 @@ class PlayState(BaseState):
             screen.blit(gHeart_image_list[heart_frame], (i * (TILE_SIZE+3), 6))
             health_left -=2
 
+        if self.player.shielded:
+              screen.blit(gShieldHeart_image_list, (10 * (TILE_SIZE+3), 6))
         #temp
         #self.room.render(screen)
 

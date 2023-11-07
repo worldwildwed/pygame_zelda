@@ -4,6 +4,7 @@ from src.Dependencies import *
 class Player(EntityBase):
     def __init__(self, conf):
         super(Player, self).__init__(conf)
+        self.shielded = False
 
     def update(self, dt, events):
         super().update(dt, events)

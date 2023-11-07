@@ -1,0 +1,17 @@
+{
+    "spriteSheetURL": "./graphics/heart_shield.png",
+    "type": "none",
+    "size": [
+        16,
+        16
+    ],
+    "sprites": [
+        {
+            "name": "heart_shield",
+            "x": 0,
+            "y": 0,
+            "scalefactor": 3,
+            "colorKey": -1
+        }
+    ]
+}
